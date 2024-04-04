@@ -51,7 +51,7 @@ export default function Home() {
 
     try {
       // Make a GET request to the API endpoint
-      const response = await axios.post("https://if-playground.vercel.app/api/hello/", {
+      const response = await axios.post("/api/hello/", {
         input: inputValue
       });    
 
