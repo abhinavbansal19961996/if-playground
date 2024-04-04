@@ -1,129 +1,148 @@
-import Head from 'next/head';
-import styles from '../styles/Home.module.css';
+import { useState } from 'react';
 
+import axios from 'axios';
+const kk = `name: time-sync-demo
+description:
+tags:
+initialize:
+  plugins:
+    'time-sync':
+      method: TimeSync
+      path: "builtin"
+      global-config: 
+        start-time: '2023-12-12T00:00:00.000Z'
+        end-time: '2023-12-12T00:01:00.000Z'
+        interval: 5
+        allow-padding: true
+tree:
+  children:
+    child:
+      pipeline:
+        - time-sync
+      config:
+      inputs:
+        - timestamp: '2023-12-12T00:00:00.000Z'
+          duration: 1
+          energy-cpu: 0.001
+        - timestamp: '2023-12-12T00:00:01.000Z'
+          duration: 5
+          energy-cpu: 0.001
+        - timestamp: '2023-12-12T00:00:06.000Z'
+          duration: 7
+          energy-cpu: 0.001
+        - timestamp: '2023-12-12T00:00:13.000Z'
+          duration: 30
+          energy-cpu: 0.001`
 export default function Home() {
+  const [inputValue, setInputValue] = useState('');
+  const [outputValue, setOutputValue] = useState('');
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+    // Function to handle row click
+    const handleRowClick = (row) => {
+      setInputValue(row.content);
+    };
+
+  const handleRunClick = async () => {
+    console.log("hsidsid")
+
+
+    try {
+      // Make a GET request to the API endpoint
+      const response = await axios.post("https://if-playground.vercel.app/api/hello/", {
+        input: inputValue
+      });    
+
+      const cleanedOutputValue = response.data.substring(response.data.indexOf('{'));
+console.log(cleanedOutputValue)
+      const formattedOutputValue = JSON.stringify(JSON.parse(cleanedOutputValue), null, 2);
+
+      // Set the output value to the response data
+      setOutputValue(formattedOutputValue);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setOutputValue('Error fetching data. Please check your network connection.');
+    }
+ 
+  };
+  const rows = [
+   {"title": "time-sync-demo", "content": kk},
+   {"title": "Row 2 content", "content": ""}
+  ];
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing <code>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+    <div className="container">
+      <h1>IF Playground</h1>
+      <div className="input-container">
+        <textarea
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder="Enter your input here"
+        />
+        <div className="row-list">
+          {rows.map((row, index) => (
+            <div key={index} className="row" onClick={() => handleRowClick(row)}>
+              {row.title}
+            </div>
+          ))}
         </div>
-      </main>
-
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel" className={styles.logo} />
-        </a>
-      </footer>
-
+      </div>
+      <button onClick={handleRunClick}>Run</button>
+      <div className="output-container">
+        <textarea
+          value={outputValue}
+          readOnly
+          placeholder="Output will appear here"
+        />
+      </div>
       <style jsx>{`
-        main {
-          padding: 5rem 0;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
+        .container {
+          margin: 50px auto;
+          padding: 20px;
+          max-width: 600px;
+          text-align: center;
+          border: 2px solid #ccc;
+          border-radius: 10px;
         }
-        footer {
+        .input-container {
+          margin-bottom: 20px;
+        }
+        textarea {
           width: 100%;
-          height: 100px;
-          border-top: 1px solid #eaeaea;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        footer img {
-          margin-left: 0.5rem;
-        }
-        footer a {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          text-decoration: none;
-          color: inherit;
-        }
-        code {
-          background: #fafafa;
+          height: 200px;
+          padding: 10px;
+          border: 1px solid #ccc;
           border-radius: 5px;
-          padding: 0.75rem;
-          font-size: 1.1rem;
-          font-family:
-            Menlo,
-            Monaco,
-            Lucida Console,
-            Liberation Mono,
-            DejaVu Sans Mono,
-            Bitstream Vera Sans Mono,
-            Courier New,
-            monospace;
+          resize: none;
         }
-      `}</style>
-
-      <style jsx global>{`
-        html,
-        body {
-          padding: 0;
-          margin: 0;
-          font-family:
-            -apple-system,
-            BlinkMacSystemFont,
-            Segoe UI,
-            Roboto,
-            Oxygen,
-            Ubuntu,
-            Cantarell,
-            Fira Sans,
-            Droid Sans,
-            Helvetica Neue,
-            sans-serif;
+        button {
+          padding: 10px 20px;
+          background-color: #007bff;
+          color: #fff;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
         }
-        * {
-          box-sizing: border-box;
+        button:hover {
+          background-color: #0056b3;
+        }
+        .output-container {
+          margin-top: 20px;
+        }
+        .row-list {
+          margin-top: 10px;
+        }
+        .row {
+          cursor: pointer;
+          padding: 5px;
+          background-color: #f0f0f0;
+          border-radius: 5px;
+          margin-bottom: 5px;
+        }
+        .row:hover {
+          background-color: #e0e0e0;
         }
       `}</style>
     </div>
