@@ -1,16 +1,22 @@
 {
   "private": true,
+  "main": "index.js",
   "scripts": {
     "build": "next build",
     "dev": "next dev",
     "start": "next start"
   },
+  
   "dependencies": {
+    "@grnsft/if-plugins": "^0.3.0",
+    "@grnsft/if-unofficial-plugins": "^0.3.0",
     "axios": "^1.6.8",
+    "chart.js": "^4.4.2",
     "dompurify": "^3.0.11",
     "fs": "^0.0.1-security",
     "next": "latest",
     "react": "18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
     "uuid": "^9.0.1"
   },

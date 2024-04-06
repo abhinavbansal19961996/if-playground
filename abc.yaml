@@ -1,0 +1,22 @@
+name: integration-template
+description: null
+tags: null
+initialize:
+  plugins:
+    sci-e:
+      method: SciE
+      path: '@grnsft/if-plugins'
+  outputs: []
+tree:
+  children:
+    child:
+      pipeline:
+        - sci-e
+      config:
+        sci-e: {}
+      inputs:
+        - timestamp: 2023-08-06T00:00
+          duration: 3600
+          cpu/energy: 10
+          memory/energy: 100
+          network/energy: 100

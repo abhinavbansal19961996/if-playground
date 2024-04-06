@@ -25,6 +25,7 @@ export default function handler(req, res) {
   
         // Delete the YAML file after executing the command
         fs.unlinkSync(filepath);
+        console.log(inputValue)
         res.status(200).json(inputValue );
       });
 
